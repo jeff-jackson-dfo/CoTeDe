@@ -33,9 +33,12 @@ classifiers=[
 ]
 dependencies = [
   "Click>=6.6",
+  "gsw>=3.6.20",
+  "matplotlib>=3.7.5",
   "numpy>=1.20",
   "oceansdb >= 0.8.13",
   "scipy >= 1.0.0",
+  "shapely>=2.0.7",
 ]
 
 [project.optional-dependencies]

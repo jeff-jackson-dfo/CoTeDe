@@ -1,7 +1,8 @@
 """ Apply Quality Control of CTD profiles
 """
 
-import pkg_resources
+# import pkg_resources
+import importlib
 from copy import deepcopy
 from datetime import datetime
 from os.path import basename
