@@ -69,7 +69,7 @@ def woa_normbias(data, varname, attrs=None, use_standard_error=False):
     else:
         mode = "profile"
 
-    depth = extract_depth(data)
+    depth = extract_depth(data, "DEPTH")
 
     db = WOA()
     # This must go away. This was a trick to handle Seabird CTDs, but

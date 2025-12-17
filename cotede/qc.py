@@ -25,8 +25,7 @@ class ProfileQC(object):
     """Quality Control a CTD profile
     """
 
-    def __init__(self, input, cfg=None, saveauxiliary=True, verbose=True,
-            attributes=None):
+    def __init__(self, input, cfg=None, saveauxiliary=True, verbose=True, attributes=None):
         """A procedure to QC a hydrographic profile
 
         Parameters
@@ -91,8 +90,7 @@ class ProfileQC(object):
                 vv = v
             for c in self.cfg['variables']:
                 if re.match("(%s)2?$" % c, vv):
-                    module_logger.debug(" %s - evaluating: %s, as type: %s" %
-                                            (self.name, v, c))
+                    module_logger.debug(" %s - evaluating: %s, as type: %s" % (self.name, v, c))
                     self.evaluate(v, self.cfg['variables'][c])
                     break
 

@@ -1,0 +1,16 @@
+[project]
+name = "notebooks"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "bokeh>=3.1.1",
+    "cotede",
+    "jupyterlab>=4.3.5",
+    "matplotlib>=3.7.5",
+    "seabird>=0.12.0",
+]
+
+[tool.uv.sources]
+cotede = { workspace = true }
