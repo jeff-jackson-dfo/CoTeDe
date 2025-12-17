@@ -4,11 +4,7 @@
 
 
 import sys
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
-
+from setuptools import setup
 
 setup(
     packages=[
@@ -18,7 +14,7 @@ setup(
         'cotede.humanqc',
         'cotede.anomaly_detection',
         'cotede.fuzzy',
+        'cotede.qc_cfg',
     ],
-    package_dir = {'cotede':
-                   'cotede'},
+    package_dir = {'cotede': 'cotede'},
 )

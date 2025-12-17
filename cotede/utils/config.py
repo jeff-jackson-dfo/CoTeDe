@@ -7,8 +7,8 @@ from collections import OrderedDict
 import copy
 import json
 import logging
-import os.path
-import pkg_resources
+import os
+from importlib import resources
 
 from .utils import cotederc
 
@@ -27,8 +27,11 @@ def list_cfgs():
     --------
     utils.load_cfg
     """
-    cfg = pkg_resources.resource_listdir("cotede", "qc_cfg")
-    cfg = sorted([c[:-5] for c in cfg if c[-5:] == ".json"])
+    cfg = sorted(
+        p.stem
+        for p in resources.files("cotede").joinpath("qc_cfg").iterdir()
+        if p.suffix == ".json"
+    )
 
     ucfg = os.listdir(cotederc("cfg"))
     ucfg = [c[:-5] for c in ucfg if c[-5:] == ".json"]
@@ -104,22 +107,34 @@ def load_cfg(cfgname="cotede"):
 
     # A given manual configuration has priority
     if isinstance(cfgname, dict):
-        module_logger.debug("User's QC cfg: %s" % cfgname)
+        module_logger.debug("User's QC cfg: %s", cfgname)
         cfg = OrderedDict(copy.deepcopy(cfgname))
+
     elif isinstance(cfgname, str):
         try:
-            # If cfg is available in builtin options, use it
-            p = pkg_resources.resource_string(
-                "cotede", os.path.join("qc_cfg", "{}.json".format(cfgname))
+            # Try builtin configuration from the cotede package
+            cfg_path = (
+                resources.files("cotede")
+                .joinpath("qc_cfg")
+                .joinpath(f"{cfgname}.json")
             )
-            cfg = json.loads(p, object_pairs_hook=OrderedDict)
-            module_logger.debug("Builtin config - %s" % cfgname)
-        except:
-            # Otherwise, try to load from user's directory
-            p = os.path.join(cotederc("cfg"), "{}.json".format(cfgname))
-            with open(p, "r") as f:
+
+            with cfg_path.open("r", encoding="utf-8") as f:
                 cfg = json.load(f, object_pairs_hook=OrderedDict)
-            module_logger.debug("User collection cfg - %s" % cfgname)
+
+            module_logger.debug("Builtin config - %s", cfgname)
+
+        except (FileNotFoundError, ModuleNotFoundError):
+            # Fallback: load from user's config directory
+            user_cfg_path = os.path.join(
+                cotederc("cfg"),
+                f"{cfgname}.json",
+            )
+
+            with open(user_cfg_path, "r", encoding="utf-8") as f:
+                cfg = json.load(f, object_pairs_hook=OrderedDict)
+
+            module_logger.debug("User collection cfg - %s", cfgname)
 
     cfg = fix_config(cfg)
     if "inherit" in cfg:

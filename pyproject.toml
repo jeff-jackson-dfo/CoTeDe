@@ -8,17 +8,29 @@ requires = [
 build-backend = 'setuptools.build_meta'
 
 [project]
-name="cotede"
+name = "cotede"
 dynamic = ["version"]
-description="Quality Control of Oceanographic Data"
+description = "Quality Control of Oceanographic Data"
 readme = "README.rst"
 requires-python = ">=3.8"
-license = {file = "LICENSE.rst"}
-keywords = ["oceanography", "ocean data", "Quality Control", "CTD"]
-authors = [
-  {email = "guilherme@castelao.net"},
-  {name = "Guilherme Castelão"}
+
+# SPDX license expression (required format)
+license = "MIT"
+
+# Explicitly list license files included in the distribution
+license-files = ["LICENSE.rst"]
+
+keywords = [
+  "oceanography",
+  "ocean data",
+  "Quality Control",
+  "CTD"
 ]
+
+authors = [
+  { name = "Guilherme Castelão", email = "guilherme@castelao.net" }
+]
+
 classifiers=[
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Science/Research",
@@ -32,6 +44,7 @@ classifiers=[
   "Topic :: Scientific/Engineering"
 ]
 dependencies = [
+  "bokeh>=3.1.1",
   "Click>=6.6",
   "gsw>=3.6.20",
   "matplotlib>=3.7.5",
