@@ -44,3 +44,6 @@ docs/notebooks/.ipynb_checkpoints
 
 test_data
 references
+
+# Generated files
+*.html
