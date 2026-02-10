@@ -45,6 +45,16 @@ def woa_normbias(data, varname, attrs=None, use_standard_error=False):
         module_logger.error("Missing time")
         raise
 
+    lat = []
+    lon = []
+
+    # Jeff Jackson added this try block 04-JAN-2026
+    try:
+        lat, lon = extract_coordinates(data, latname='LATITUDE', lonname='LONGITUDE')
+    except LookupError:
+        module_logger.error("Missing geolocation columns (lat/lon)")
+        raise
+
     try:
         # Note that QCCheck fallback to self.data.attrs if attrs not given
         lat, lon = extract_coordinates(data, attrs)

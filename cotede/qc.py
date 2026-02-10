@@ -67,6 +67,7 @@ class ProfileQC(object):
         assert (hasattr(input, 'keys')) and (len(input.keys()) > 0)
 
         self.cfg = load_cfg(cfg)
+        
         module_logger.debug("Using cfg: {}".format(self.cfg))
 
         self.input = deepcopy(input)

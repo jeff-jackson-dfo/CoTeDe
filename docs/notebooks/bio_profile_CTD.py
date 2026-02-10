@@ -24,8 +24,8 @@ from seabird.cnv import fCNV
 data = fCNV('Dat4805179.CNV')
 # data = cotede.datasets.load_ctd()
 
-data.add_depth(pressure_key="PRES", lat_key="LATITUDE")
-# print(data["depth"])
+data.add_depth(pressure_key="PRES", lat_key="LATITUDE", depth_key="DEPTH")
+print(data["DEPTH"])
 
 def fix_sigma_theta(profile):
     # Get the index(ices) position of specified key(s)
@@ -113,7 +113,7 @@ p2 = figure(width=420, height=600, title="Global Range Check (0 <= S <= 41)")
 p2.y_range = p1.y_range
 p2.scatter(data['PSAL'][idx_valid], -data['PRES'][idx_valid], size=8, line_color="seagreen", fill_color="mediumseagreen", fill_alpha=0.3, legend_label="Good values")
 p2.scatter(data['PSAL'][~idx_valid], -data['PRES'][~idx_valid], size=8, line_color="red", fill_color="red", fill_alpha=0.3, legend_label="Bad values", marker='triangle')
-p2.xaxis.axis_label = "Pratical Salinity"
+p2.xaxis.axis_label = "Practical Salinity"
 p2.yaxis.axis_label = "Depth [m]"
 
 p = row(p1, p2)
@@ -265,7 +265,7 @@ p2 = figure(width=420, height=600, title="Global Range Check (0 <= S <= 41)")
 p2.y_range = p1.y_range
 p2.scatter(data['PSAL'][idx_valid], -data['PRES'][idx_valid], size=8, line_color="seagreen", fill_color="mediumseagreen", fill_alpha=0.3, legend_label="Good values")
 p2.scatter(data['PSAL'][~idx_valid], -data['PRES'][~idx_valid], size=8, line_color="red", fill_color="red", fill_alpha=0.3, legend_label="Bad values", marker='triangle')
-p2.xaxis.axis_label = "Pratical Salinity"
+p2.xaxis.axis_label = "Practical Salinity"
 p2.yaxis.axis_label = "Depth [m]"
 
 p = row(p1, p2)
@@ -286,27 +286,17 @@ y_spike.flags
 # ## The Easiest Way: High level
 # Let's evaluate this profile using EuroGOOS standard tests.
 
-pqced = cotede.ProfileQCed(data, cfg='eurogoos')
-
-p = figure(width=500, height=600)
-p.scatter(pqced['TEMP'], -pqced['PRES'], size=8, line_color="green", fill_color="green", fill_alpha=0.3)
-
-# set output to static HTML file
-output_file(filename="bio_profile_CTD_plot04.html", title="Profile CTD Quality Control - Plot 4")
-save(p)
+# pqced = cotede.ProfileQCed(data, cfg='eurogoos')
+# p = figure(width=500, height=600)
+# p.scatter(pqced['TEMP'], -pqced['PRES'], size=8, line_color="green", fill_color="green", fill_alpha=0.3)
+# # set output to static HTML file
+# output_file(filename="bio_profile_CTD_plot04.html", title="Profile CTD Quality Control - Plot 4")
+# save(p)
 
 # ## QC with more control: "medium" level
-
 pqc = cotede.ProfileQC(data, cfg='eurogoos')
 
-pqc.keys()
-
-pqc.flags["TEMP"]
-
-data.keys()
-
 # Low level
-
 y = qctests.GlobalRange(data, 'TEMP', cfg={'minval': -4, "maxval": 45 })
 y.flags
 y = qctests.Tukey53H(data, 'TEMP', cfg={'threshold': 6, "l": 12})
@@ -318,7 +308,6 @@ output_file(filename="bio_profile_CTD_plot05.html", title="Profile CTD Quality C
 save(p)
 
 cfg = {'TEMP': {'global_range': {'minval': -4, 'maxval': 45}}}
-
 pqc = cotede.ProfileQC(data, cfg)
 
 pqc.flags['TEMP']
@@ -351,8 +340,8 @@ p.scatter(data['TEMP'][idx_bad], -data['PRES'][idx_bad], size=8, line_color="red
 output_file(filename="bio_profile_CTD_plot07.html", title="Profile CTD Quality Control - Plot 7")
 save(p)
 
+# WOA comparison
 cfg['TEMP']['woa_normbias'] = {'threshold': 6}
-
 pqc = cotede.ProfileQC(data, cfg)
 
 pqc.flags['TEMP']
@@ -389,24 +378,17 @@ save(p)
 
 ## The Easiest Way: High level
 # Let's evaluate this profile using EuroGOOS standard tests.
-
-pqced = cotede.ProfileQCed(data, cfg='eurogoos')
-
-p = figure(width=500, height=600)
-p.scatter(pqced['TEMP'], -pqced['PRES'], size=8, line_color="green", fill_color="green", fill_alpha=0.3)
-
-# set output to static HTML file
-output_file(filename="bio_profile_CTD_plot10.html", title="Profile CTD Quality Control - Plot 10")
-save(p)
+# pqced = cotede.ProfileQCed(data, cfg='eurogoos')
+# p = figure(width=500, height=600)
+# p.scatter(pqced['TEMP'], -pqced['PRES'], size=8, line_color="green", fill_color="green", fill_alpha=0.3)
+# # set output to static HTML file
+# output_file(filename="bio_profile_CTD_plot10.html", title="Profile CTD Quality Control - Plot 10")
+# save(p)
 
 ## QC with more control: "medium" level
-
 pqc = cotede.ProfileQC(data, cfg='eurogoos')
-
 pqc.keys()
-
 pqc.flags["TEMP"]
-
 data.keys()
 
 ### Low level

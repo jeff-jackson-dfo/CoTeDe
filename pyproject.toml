@@ -6,7 +6,7 @@ readme = "README.rst"
 requires-python = ">=3.8"
 
 # SPDX license expression (required format)
-license = "MIT"
+license = "BSD-3-Clause"
 
 # Explicitly list license files included in the distribution
 license-files = ["LICENSE.rst"]
@@ -25,7 +25,6 @@ authors = [
 classifiers=[
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Science/Research",
-  "License :: OSI Approved :: BSD License",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.8",
@@ -38,9 +37,20 @@ dependencies = [
   "bokeh>=3.1.1",
   "Click>=6.6",
   "gsw>=3.6.20",
+  "icecream>=2.1.8",
   "matplotlib>=3.7.5",
   "numpy>=1.20",
   "oceansdb >= 0.8.13",
   "scipy >= 1.0.0",
+  "setuptools-scm>=9.2.2",
   "shapely>=2.0.7",
+]
+
+[tool.setuptools_scm]
+write_to = "cotede/version.py"
+
+[build-system]
+requires = [
+  "setuptools",
+  "setuptools_scm[toml]",
 ]
