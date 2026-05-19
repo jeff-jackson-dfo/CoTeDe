@@ -6,11 +6,11 @@ __email__ = 'guilherme@castelao.net'
 from cotede import qc
 from cotede.qc import ProfileQC, ProfileQCed
 
-from pkg_resources import get_distribution, DistributionNotFound
+from importlib import metadata
 
 try:
-    __version__ = get_distribution(__name__).version
-except DistributionNotFound:
+    __version__ = metadata.version(__name__)
+except metadata.PackageNotFoundError:
     try:
         from .version import version as __version__
     except ImportError:

@@ -8,9 +8,12 @@ import copy
 import json
 import logging
 import os.path
-import pkg_resources
 
-from .utils import cotederc
+from importlib.resources import files
+
+from typing import Optional
+
+from cotede.utils import cotederc
 
 module_logger = logging.getLogger(__name__)
 
@@ -27,7 +30,7 @@ def list_cfgs():
     --------
     utils.load_cfg
     """
-    cfg = pkg_resources.resource_listdir("cotede", "qc_cfg")
+    cfg = [item.name for item in files("cotede.qc_cfg").iterdir()]
     cfg = sorted([c[:-5] for c in cfg if c[-5:] == ".json"])
 
     ucfg = os.listdir(cotederc("cfg"))
@@ -50,7 +53,7 @@ def inheritance(child, parent):
     return parent
 
 
-def load_cfg(cfgname="cotede"):
+def load_cfg(cfgname: Optional[str] = "cotede"):
     """Load a QC configuration
 
     A QC procedure is a sequence of tests, and respective tuning parameters
@@ -108,13 +111,11 @@ def load_cfg(cfgname="cotede"):
         cfg = OrderedDict(copy.deepcopy(cfgname))
     elif isinstance(cfgname, str):
         try:
-            # If cfg is available in builtin options, use it
-            p = pkg_resources.resource_string(
-                "cotede", os.path.join("qc_cfg", "{}.json".format(cfgname))
-            )
+            p = (files("cotede") / "qc_cfg" / f"{cfgname}.json").read_bytes()            
             cfg = json.loads(p, object_pairs_hook=OrderedDict)
             module_logger.debug("Builtin config - %s" % cfgname)
-        except:
+        except Exception as e:
+            print(e)
             # Otherwise, try to load from user's directory
             p = os.path.join(cotederc("cfg"), "{}.json".format(cfgname))
             with open(p, "r") as f:
