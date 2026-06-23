@@ -1,17 +1,56 @@
 [project]
 name = "cotede"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.13"
+dynamic = ["version"]
+description = "Quality Control of Oceanographic Data"
+readme = "README.rst"
+requires-python = ">=3.8"
+
+# SPDX license expression (required format)
+license = "BSD-3-Clause"
+
+# Explicitly list license files included in the distribution
+license-files = ["LICENSE.rst"]
+
+keywords = [
+  "oceanography",
+  "ocean data",
+  "Quality Control",
+  "CTD"
+]
+
+authors = [
+  { name = "Guilherme Castelão", email = "guilherme@castelao.net" }
+]
+
+classifiers=[
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Scientific/Engineering"
+]
 dependencies = [
-    "bokeh>=3.8.1",
-    "gsw>=3.6.20",
-    "importlib>=1.0.4",
-    "matplotlib>=3.10.7",
-    "numpy>=2.3.5",
-    "oceansdb>=0.8.15",
-    "scipy>=1.16.3",
-    "seabird>=0.12.0",
-    "shapely>=2.1.2",
+  "bokeh>=3.1.1",
+  "Click>=6.6",
+  "gsw>=3.6.20",
+  "icecream>=2.1.8",
+  "matplotlib>=3.7.5",
+  "numpy>=1.20",
+  "oceansdb >= 0.8.13",
+  "scipy >= 1.0.0",
+  "setuptools-scm>=9.2.2",
+  "shapely>=2.0.7",
+]
+
+[tool.setuptools_scm]
+write_to = "cotede/version.py"
+
+[build-system]
+requires = [
+  "setuptools",
+  "setuptools_scm[toml]",
 ]

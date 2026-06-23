@@ -4,7 +4,7 @@
 """
 """
 
-import pkg_resources
+from importlib import resources
 import json
 
 import numpy as np
@@ -20,19 +20,20 @@ def test_cfg_json():
 
         In the future, when move load cfg outside, refactor here.
     """
-    cfgfiles = [
-        f
-        for f in pkg_resources.resource_listdir("cotede", "qc_cfg")
-        if f[-5:] == ".json"
-    ]
+    cfg = sorted(
+        # f.stem
+        f.name
+        for f in resources.files("cotede").joinpath("qc_cfg").iterdir()
+        if f.suffix == ".json"
+    )
+
 
     for cfgfile in cfgfiles:
         try:
-            cfg = json.loads(
-                pkg_resources.resource_string("cotede", "qc_cfg/%s" % cfgfile)
-            )
-        except:
-            assert False, "Failed to load %s" % cfgfile
+            with resources.files("cotede").joinpath(f"qc_cfg/{cfgfile}").open("r", encoding="utf-8") as f:
+                cfg = json.load(f)
+        except Exception:
+            raise RuntimeError(f"Failed to load {cfgfile}")
 
         assert isinstance(cfg, dict)
         for k in cfg.keys():
@@ -43,14 +44,16 @@ def test_cfg_existentprocedure():
     """Check if all procedures requested by the cfg actually exist.
     """
     cfgfiles = [
-        f
-        for f in pkg_resources.resource_listdir("cotede", "qc_cfg")
-        if f[-5:] == ".json"
+        f.name
+        for f in resources.files("cotede").joinpath("qc_cfg").iterdir()
+        if f.suffix == ".json"
     ]
+
     QCTESTS = dir(cotede.qctests)
     for cfgfile in cfgfiles:
-        cfg = json.loads(pkg_resources.resource_string("cotede", "qc_cfg/%s" % cfgfile))
-        assert type(cfg) is dict
+        with resources.files("cotede").joinpath("qc_cfg", cfgfile).open("r", encoding="utf-8") as f:
+            cfg = json.load(f)
+        assert isinstance(cfg, dict)
         assert "variables" in cfg, "Missing variables in {}".format(cfgfile)
         for v in cfg["variables"].keys():
             for c in cfg["variables"][v]:

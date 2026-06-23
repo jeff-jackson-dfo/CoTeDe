@@ -12,6 +12,7 @@ import numpy as np
 import os
 from os.path import expanduser
 import re
+from importlib import resources
 
 module_logger = logging.getLogger(__name__)
 

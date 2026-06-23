@@ -7,13 +7,10 @@ from collections import OrderedDict
 import copy
 import json
 import logging
-import os.path
+import os
+from importlib import resources
 
-from importlib.resources import files
-
-from typing import Optional
-
-from cotede.utils import cotederc
+from .utils import cotederc
 
 module_logger = logging.getLogger(__name__)
 
@@ -30,8 +27,11 @@ def list_cfgs():
     --------
     utils.load_cfg
     """
-    cfg = [item.name for item in files("cotede.qc_cfg").iterdir()]
-    cfg = sorted([c[:-5] for c in cfg if c[-5:] == ".json"])
+    cfg = sorted(
+        p.stem
+        for p in resources.files("cotede").joinpath("qc_cfg").iterdir()
+        if p.suffix == ".json"
+    )
 
     ucfg = os.listdir(cotederc("cfg"))
     ucfg = [c[:-5] for c in ucfg if c[-5:] == ".json"]
@@ -53,7 +53,7 @@ def inheritance(child, parent):
     return parent
 
 
-def load_cfg(cfgname: Optional[str] = "cotede"):
+def load_cfg(cfgname="cotede"):
     """Load a QC configuration
 
     A QC procedure is a sequence of tests, and respective tuning parameters
@@ -107,20 +107,34 @@ def load_cfg(cfgname: Optional[str] = "cotede"):
 
     # A given manual configuration has priority
     if isinstance(cfgname, dict):
-        module_logger.debug("User's QC cfg: %s" % cfgname)
+        module_logger.debug("User's QC cfg: %s", cfgname)
         cfg = OrderedDict(copy.deepcopy(cfgname))
+
     elif isinstance(cfgname, str):
         try:
-            p = (files("cotede") / "qc_cfg" / f"{cfgname}.json").read_bytes()            
-            cfg = json.loads(p, object_pairs_hook=OrderedDict)
-            module_logger.debug("Builtin config - %s" % cfgname)
-        except Exception as e:
-            print(e)
-            # Otherwise, try to load from user's directory
-            p = os.path.join(cotederc("cfg"), "{}.json".format(cfgname))
-            with open(p, "r") as f:
+            # Try builtin configuration from the cotede package
+            cfg_path = (
+                resources.files("cotede")
+                .joinpath("qc_cfg")
+                .joinpath(f"{cfgname}.json")
+            )
+
+            with cfg_path.open("r", encoding="utf-8") as f:
                 cfg = json.load(f, object_pairs_hook=OrderedDict)
-            module_logger.debug("User collection cfg - %s" % cfgname)
+
+            module_logger.debug("Builtin config - %s", cfgname)
+
+        except (FileNotFoundError, ModuleNotFoundError):
+            # Fallback: load from user's config directory
+            user_cfg_path = os.path.join(
+                cotederc("cfg"),
+                f"{cfgname}.json",
+            )
+
+            with open(user_cfg_path, "r", encoding="utf-8") as f:
+                cfg = json.load(f, object_pairs_hook=OrderedDict)
+
+            module_logger.debug("User collection cfg - %s", cfgname)
 
     cfg = fix_config(cfg)
     if "inherit" in cfg:

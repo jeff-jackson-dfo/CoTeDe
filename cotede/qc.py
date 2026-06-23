@@ -1,6 +1,7 @@
 """ Apply Quality Control of CTD profiles
 """
 
+import importlib
 from copy import deepcopy
 from datetime import datetime
 from os.path import basename
@@ -66,6 +67,7 @@ class ProfileQC(object):
         assert (hasattr(input, 'keys')) and (len(input.keys()) > 0)
 
         self.cfg = load_cfg(cfg)
+        
         module_logger.debug("Using cfg: {}".format(self.cfg))
 
         self.input = deepcopy(input)

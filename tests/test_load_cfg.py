@@ -5,15 +5,16 @@
 """
 
 import os.path
-import pkg_resources
+from importlib import resources
 
 from cotede.utils import load_cfg, cotederc
 from cotede.utils.config import convert_021_to_022
 
-
-CFG = [f[:-5] for f in pkg_resources.resource_listdir('cotede', 'qc_cfg')
-        if f[-5:] == '.json']
-
+CFG = [
+    p.stem
+    for p in resources.files("cotede").joinpath("qc_cfg").iterdir()
+    if p.suffix == ".json"
+]
 
 def test_no_local_duplicate_cfg():
     """ Avoid local cfg of default procedures
